@@ -37,7 +37,36 @@ namespace AspApiSample.DI
             IEnumerable<Dependency> dependencies = BuildTree(_dependencies);
             Dictionary<Type, Dependency> table = ToDependencyTable(dependencies);
 
+            ThrowOnСircularDependency(dependencies);
+
             return new Container(table);
+        }
+
+        private static void ThrowOnСircularDependency(IEnumerable<Dependency> dependencies)
+        {
+            // I use primitive algorithm O(n2), because in this case method usually called only once at startup
+            // also, typically, the dependencies count about 100-200
+
+            foreach (TransientDependency vertex in dependencies.OfType<TransientDependency>())
+            {
+                if (DepthFirstSearch(vertex, new List<Dependency>()))
+                {
+                    throw new InvalidOperationException($"Сircular dependency for {vertex.Interface}");
+                }
+            }
+        }
+
+        private static bool DepthFirstSearch(TransientDependency vertex, List<Dependency> visited)
+        {
+            if (visited.Contains(vertex)) return true;
+            visited.Add(vertex);
+
+            foreach (TransientDependency dependency in vertex.Dependencies.OfType<TransientDependency>())
+            {
+                if (DepthFirstSearch(dependency, visited) == true) return true;
+            }
+
+            return false;
         }
 
         private static IEnumerable<Dependency> BuildTree(IEnumerable<Dependency> items)
