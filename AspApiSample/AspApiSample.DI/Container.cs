@@ -27,5 +27,10 @@ namespace AspApiSample.DI
 
             return dependency.Build(this);
         }
+
+        public Container CreateScope()
+        {
+            return new Container(_dependencies);
+        }
     }
 }
