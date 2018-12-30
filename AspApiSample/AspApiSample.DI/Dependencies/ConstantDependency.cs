@@ -23,7 +23,7 @@ namespace AspApiSample.DI.Dependencies
 
         public override Dependency CreatePartialCopy()
         {
-            return new ConstantDependency(Interface, Service, _constant);
+            return new ConstantDependency(Interface, Service, _constant) { Name = Name };
         }
     }
 }

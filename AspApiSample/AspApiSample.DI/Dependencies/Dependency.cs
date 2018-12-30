@@ -12,8 +12,10 @@ namespace AspApiSample.DI.Dependencies
         {
             Interface = abstraction ?? throw new ArgumentNullException(nameof(abstraction));
             Service = implementation ?? throw new ArgumentNullException(nameof(implementation));
+            Name = string.Empty;
         }
 
+        public string Name { get; set; }
         public Type Interface { get; private set; }
         public Type Service { get; private set; }
         public abstract object Build(Container container);

@@ -29,7 +29,7 @@ namespace AspApiSample.DI.Dependencies
 
         public override Dependency CreatePartialCopy()
         {
-            return new TransientDependency(Interface, Service);
+            return new TransientDependency(Interface, Service) { Name = Name };
         }
     }
 }

@@ -33,7 +33,7 @@ namespace AspApiSample.DI.Dependencies
 
         public override Dependency CreatePartialCopy()
         {
-            return new SingletonDependency(Interface, Service);
+            return new SingletonDependency(Interface, Service) { Name = Name };
         }
     }
 }

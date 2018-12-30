@@ -10,9 +10,9 @@ namespace AspApiSample.DI
 {
     public class Container
     {
-        private readonly Dictionary<Type, Dependency> _dependencies;
+        private readonly DependencyTable _dependencies;
 
-        internal Container(Dictionary<Type, Dependency> dependencies)
+        internal Container(DependencyTable dependencies)
         {
             _dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
             ScopedInstances = new ConcurrentDictionary<Dependency, Lazy<object>>();
@@ -22,8 +22,17 @@ namespace AspApiSample.DI
 
         public object Get(Type abstraction)
         {
-            if (_dependencies.TryGetValue(abstraction, out Dependency dependency) == false)
+            if (_dependencies.TryGetValue(abstraction, out Dictionary<string, Dependency> table) == false)
                 throw new InvalidOperationException($"Dependency {abstraction} not registered");
+
+            if (table.Count > 1) throw new InvalidOperationException($"Ambiguous services for {abstraction}");
+            return table.Single().Value.Build(this);
+        }
+
+        public object Get(Type abstraction, string name)
+        {
+            if (_dependencies.TryGetValue(abstraction, out Dictionary<string, Dependency> table) == false || table.TryGetValue(name, out Dependency dependency) == false)
+                throw new InvalidOperationException($"Dependency {abstraction} with name {name} not registered");
 
             return dependency.Build(this);
         }
