@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AspApiSample.DI.Attributes;
+using AspApiSample.Web.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -9,9 +11,16 @@ namespace AspApiSample.Web.Controllers
 {
     public class HelloController : ApiController
     {
+        private readonly IGreeter _greeter;
+
+        public HelloController([DependencyName("Hello")] IGreeter greeter)
+        {
+            _greeter = greeter ?? throw new ArgumentNullException(nameof(greeter));
+        }
+
         public string Get()
         {
-            throw new NotImplementedException();
+            return _greeter.SayHello();
         }
     }
 }

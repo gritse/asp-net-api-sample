@@ -1,5 +1,7 @@
 ﻿using AspApiSample.DI;
 using AspApiSample.Web.Infrastructure;
+using AspApiSample.Web.Interfaces;
+using AspApiSample.Web.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,9 @@ namespace AspApiSample.Web
         {
             // Web API configuration and services
             ContainerBuilder builder = new ContainerBuilder();
+
+            builder.AddTransient<IGreeter, HelloService>("Hello");
+            builder.AddTransient<IGreeter, HiService>("Hi");
 
             Container container = builder.Build();
             config.DependencyResolver = new DependencyResolverAdapter(container);
