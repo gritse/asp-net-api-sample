@@ -20,5 +20,10 @@ namespace AspApiSample.DI.Dependencies
             Lazy<object> lazyFactory = container.ScopedInstances.GetOrAdd(this, _ => new Lazy<object>(() => Create(container), true));
             return lazyFactory.Value;
         }
+
+        public override Dependency CreatePartialCopy()
+        {
+            return new ScopedDependency(Interface, Service);
+        }
     }
 }

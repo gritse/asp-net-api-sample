@@ -20,5 +20,10 @@ namespace AspApiSample.DI.Dependencies
         {
             return _constant;
         }
+
+        public override Dependency CreatePartialCopy()
+        {
+            return new ConstantDependency(Interface, Service, _constant);
+        }
     }
 }

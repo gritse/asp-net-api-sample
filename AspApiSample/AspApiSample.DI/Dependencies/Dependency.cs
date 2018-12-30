@@ -17,5 +17,7 @@ namespace AspApiSample.DI.Dependencies
         public Type Interface { get; private set; }
         public Type Service { get; private set; }
         public abstract object Build(Container container);
+
+        public abstract Dependency CreatePartialCopy();
     }
 }

@@ -31,5 +31,9 @@ namespace AspApiSample.DI.Dependencies
             return _singleton;
         }
 
+        public override Dependency CreatePartialCopy()
+        {
+            return new SingletonDependency(Interface, Service);
+        }
     }
 }

@@ -26,5 +26,10 @@ namespace AspApiSample.DI.Dependencies
         {
             return Create(container);
         }
+
+        public override Dependency CreatePartialCopy()
+        {
+            return new TransientDependency(Interface, Service);
+        }
     }
 }
