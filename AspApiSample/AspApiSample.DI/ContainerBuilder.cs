@@ -102,7 +102,7 @@ namespace AspApiSample.DI
             {
                 if (item is TransientDependency dependency)
                 {
-                    ConstructorInfo ctor = GetConstructor(dependency);
+                    ConstructorInfo ctor = GetConstructor(dependency.Service);
 
                     ParameterInfo[] parameters = ctor.GetParameters();
 
@@ -149,16 +149,16 @@ namespace AspApiSample.DI
             return dependencyTable;
         }
 
-        private static ConstructorInfo GetConstructor(TransientDependency dependency)
+        internal static ConstructorInfo GetConstructor(Type service)
         {
-            ConstructorInfo[] constructors = dependency.Service.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
+            ConstructorInfo[] constructors = service.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
 
             if (constructors.Length == 0)
-                throw new InvalidOperationException($"Service {dependency.Service} hasn't any public constructors");
+                throw new InvalidOperationException($"Service {service} hasn't any public constructors");
 
             // Service should has only one costructor or parameterless
             if (constructors.Length > 1 && constructors.Any(c => c.GetParameters().Length == 0) == false)
-                throw new InvalidOperationException($"Service {dependency.Service} has many constructors and hasn't parameterless constructor");
+                throw new InvalidOperationException($"Service {service} has many constructors and hasn't parameterless constructor");
 
             ConstructorInfo ctor = constructors.Length > 1
                 ? constructors.First(c => c.GetParameters().Length == 0)

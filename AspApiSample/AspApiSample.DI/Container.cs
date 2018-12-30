@@ -1,8 +1,10 @@
-﻿using AspApiSample.DI.Dependencies;
+﻿using AspApiSample.DI.Attributes;
+using AspApiSample.DI.Dependencies;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -35,6 +37,22 @@ namespace AspApiSample.DI
                 throw new InvalidOperationException($"Dependency {abstraction} with name {name} not registered");
 
             return dependency.Build(this);
+        }
+
+        public object Resolve(Type type)
+        {
+            ConstructorInfo ctor = ContainerBuilder.GetConstructor(type);
+            ParameterInfo[] parameters = ctor.GetParameters();
+
+            object[] arguments = parameters.Select(param =>
+            {
+                var attribute = param.GetCustomAttribute<DependencyNameAttribute>();
+                Type argument = param.ParameterType;
+
+                return attribute == null ? this.Get(argument) : this.Get(argument, attribute.Name);
+            }).ToArray();
+
+            return ctor.Invoke(arguments);
         }
 
         public Container CreateScope()
